@@ -1,0 +1,108 @@
+= dm-perspectives
+
+Presenters for DataMapper models.
+
+Stop model obesity!  We all love 'fat model', 'skinny controller', but
+sometimes it can be taken too far in an attempt to keep all logic out of the
+controller or view.
+
+The presentation of a model is something that is definitely related, but absolutely
+not the responsibility of the model. `dm-perspectives` allows you to decompose
+presentation into smaller separate classes. If you have methods like `display_name`
+or `formatted_date` inappropriately stuffed into a model - then this plugin is for you.
+
+    @person = Person.new(:first_name => "John", :last_name => "Doe")
+
+    @person.perspective(:display).name # => "Doe, John"
+
+== Usage
+
+Perspectives can be created either in the model:
+
+    require 'dm-perspectives'
+
+    class Widget
+      include DataMapper::Resource
+      property :age, Integer
+    end
+
+    Widget.perspectives # => []
+
+    class Widget
+      include DataMapper::Resource
+      perspective :foo do
+        ...
+      end
+    end
+
+    Widget.perspectives # => [:foo]
+
+Or in separate class:
+
+    class WidgetPerspectives < DataMapper::Perspectives::Base
+
+      perspective :foo do
+        def age_in_dog_years
+          @resource.age * 7
+        end
+      end
+
+      perspective :bar do
+        ...
+      end
+    end
+
+    Widget.perspectives # => [:foo,:bar]
+
+    @widget = Widget.new(:age => 10)
+
+    @widget.age # => 10
+    @widget.perspective(:foo).age_in_dog_years # => 70
+
+In order for `dm-perspectives` to find your Perspectives, they must be named in
+the format `#{ModelName}Perspectives`.
+
+Inside the perspective, the presented object is always accessible through the
+instance variable `@resource`.
+
+== Including Methods
+
+Perspectives, unless inheriting from another perspective will not have any
+methods by themselves. You can add methods to perspectives by passing an
+`:+include+` option when defining a perspective.
+
+      perspective :bar, :include => :properties do
+        ...
+      end
+
+This will include object properties as methods of the perspective.
+
+      perspective :bar, :include => [:method1, :method2] do
+        ...
+      end
+
+This will include object `methods`, `method1`, and `method2` in the perspective.
+You can also exclude certain methods by passing in an `:+exclude+` option
+(this is only really useful when passing the special `:properties` option).
+
+== Inheritence
+
+I usually make a base perspective, and then have subsequent perspectives
+inherit from it.
+
+    class ApplicationPerspectives < DataMapper::Perspectives::Base
+    end
+
+== Note on Patches/Pull Requests
+
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don't break it in a
+  future version unintentionally.
+* Commit, do not mess with rakefile, version, or history.
+  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for topic branches.
+
+== Copyright
+
+Copyright (c) 2010 Asher Van Brunt. See LICENSE for details.
