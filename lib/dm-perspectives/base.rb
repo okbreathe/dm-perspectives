@@ -33,7 +33,7 @@ module DataMapper
         end
 
         def model
-          ::Object.full_const_get(self.to_s.gsub(/Perspectives$/,''))
+          ::Object.full_const_get(self.to_s.gsub(/Perspectives(\[[^\]]+\])?$/,''))
         end
 
         protected
