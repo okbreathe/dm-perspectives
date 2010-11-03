@@ -1,7 +1,7 @@
 require 'dm-core'
 require 'active_support/core_ext/class/inheritable_attributes'
 require 'active_support/core_ext/class/attribute_accessors'
-require 'facets/memoize'
+require 'facets/memoizable'
 
 Dir[File.join(File.dirname(__FILE__), 'dm-perspectives', '*.rb')].each{|f| require f }
 
@@ -45,6 +45,7 @@ module DataMapper
     end # ClassMethods
     
     module InstanceMethods
+      include Memoizable
 
       # Returns the given perspective for an instance
       def perspective(name,opts={})
