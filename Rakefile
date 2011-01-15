@@ -1,24 +1,30 @@
 require 'rubygems'
+require 'bundler'
+begin
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
+end
 require 'rake'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "dm-perspectives"
-    gem.summary = %Q{Presenters for DataMapper models.}
-    gem.description = %Q{Presenters for DataMapper models.}
-    gem.email = "asher@okbreathe.com"
-    gem.homepage = "http://github.com/okbreathe/dm-perspectives"
-    gem.authors = ["Asher Van Brunt"]
-    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
-    gem.add_development_dependency "yard", ">= 0"
-    gem.add_dependency('dm-core', '>= 1.0.0')
-    gem.add_dependency('activesupport', '>= 2.3.5')
-  end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+require 'jeweler'
+Jeweler::Tasks.new do |gem|
+  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
+  gem.name = "dm-perspectives"
+  gem.homepage = "http://github.com/okbreathe/dm-perspectives"
+  gem.license = "MIT"
+  gem.summary = %Q{Presenters for DataMapper models.}
+  gem.description = %Q{Presenters for DataMapper models.}
+  gem.email = "asher.vanbrunt@gmail.com"
+  gem.authors = ["Asher Van Brunt"]
+  gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
+  gem.add_development_dependency "yard", ">= 0"
+  gem.add_dependency('dm-core', '>= 1.0.0')
+  gem.add_dependency('activesupport', '>= 2.3.5')
 end
+Jeweler::RubygemsDotOrgTasks.new
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
@@ -27,28 +33,21 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-begin
-  require 'rcov/rcovtask'
-  Rcov::RcovTask.new do |test|
-    test.libs << 'test'
-    test.pattern = 'test/**/test_*.rb'
-    test.verbose = true
-  end
-rescue LoadError
-  task :rcov do
-    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
-  end
+require 'rcov/rcovtask'
+Rcov::RcovTask.new do |test|
+  test.libs << 'test'
+  test.pattern = 'test/**/test_*.rb'
+  test.verbose = true
 end
-
-task :test => :check_dependencies
 
 task :default => :test
 
-begin
-  require 'yard'
-  YARD::Rake::YardocTask.new
-rescue LoadError
-  task :yardoc do
-    abort "YARD is not available. In order to run yardoc, you must: sudo gem install yard"
-  end
+require 'rake/rdoctask'
+Rake::RDocTask.new do |rdoc|
+  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "dm-perspectives #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
 end

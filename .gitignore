@@ -20,3 +20,4 @@ pkg
 
 ## PROJECT::SPECIFIC
 dm-perspectives.gemspec
+Gemfile.lock
