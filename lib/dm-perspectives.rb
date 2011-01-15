@@ -13,7 +13,7 @@ module DataMapper
 
       # A list of perspectives available to this class
       def perspectives
-        perspective_class ?  perspective_class.perspectives.keys : []
+        perspective_class ? perspective_class.perspectives.keys : []
       end
 
       # Add a new perspective for this this class. If the perspective does not
@@ -48,7 +48,7 @@ module DataMapper
       # Returns the given perspective for an instance
       def perspective(name,opts={})
         raise NonExistentPerspective, "#{self.class} has no perspectives"  unless p = self.class.perspective_class
-        p.get_perspective(name,self,opts)
+        @perspective ||= p.get_perspective(name,self,opts)
       end
 
       # Scope calls to the perspective
