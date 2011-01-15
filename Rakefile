@@ -14,7 +14,6 @@ begin
     gem.add_development_dependency "yard", ">= 0"
     gem.add_dependency('dm-core', '>= 1.0.0')
     gem.add_dependency('activesupport', '>= 2.3.5')
-    gem.add_dependency('facets', '>= 2.8.4')
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError

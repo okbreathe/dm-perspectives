@@ -1,7 +1,6 @@
 require 'dm-core'
 require 'active_support/core_ext/class/inheritable_attributes'
 require 'active_support/core_ext/class/attribute_accessors'
-require 'facets/memoizable'
 
 Dir[File.join(File.dirname(__FILE__), 'dm-perspectives', '*.rb')].each{|f| require f }
 
@@ -45,15 +44,12 @@ module DataMapper
     end # ClassMethods
     
     module InstanceMethods
-      include Memoizable
 
       # Returns the given perspective for an instance
       def perspective(name,opts={})
         raise NonExistentPerspective, "#{self.class} has no perspectives"  unless p = self.class.perspective_class
         p.get_perspective(name,self,opts)
       end
-
-      memoize :perspective
 
       # Scope calls to the perspective
       def with_perspective(name,opts={},&blk)
